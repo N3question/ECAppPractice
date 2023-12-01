@@ -11,8 +11,8 @@ integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUU
 <body>
 	<main>
 		<div class="container">
-			<h2 class="mt-5">新規登録</h2>
-			<form action="user_signup" method="post">
+			<h2 class="mt-5">ユーザ新規作成</h2>
+			<form action="admin_create_user" method="post">
 				<table>
 					<tr>
 						<td><label>名前</label></td>
@@ -22,10 +22,20 @@ integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUU
 						<td><label>パスワード</label></td>
 						<td><input type="text" name="password"></td>
 					</tr>
+					<tr>
+						<td><label>郵便番号</label></td>
+						<td>
+							<input type="text" name="postal_code" pattern="\d{3}-?\d{4}">
+						</td>
+					</tr>
+					<tr>
+						<td><label>住所</label></td>
+						<td><input type="text" name="address"></td>
+					</tr>
 				</table>
 				<input type="submit" value="submit" class="btn btn-success">
 			</form>
-			<a href="index">back</a>
+			<a href="admin_index">back</a>
 		</div>
 	</main>
 </body>

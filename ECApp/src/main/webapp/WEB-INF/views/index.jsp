@@ -24,6 +24,7 @@ integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUU
 	<main>
 		<div class="container">
 			<h2>index</h2>
+%>
 		</div>
 	</main>
 </body>
