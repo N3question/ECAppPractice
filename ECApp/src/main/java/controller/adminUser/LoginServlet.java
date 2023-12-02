@@ -1,15 +1,18 @@
 package controller.adminUser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-import bean.AdminBeans;
+import bean.AdminUserBeans;
+import bean.ItemBeans;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.AdminUserSelectModel;
+import model.SelectAdminUserModel;
+import model.SelectAllItemModel;
 
 @WebServlet("/admin_login")
 public class LoginServlet extends HttpServlet {
@@ -29,12 +32,14 @@ public class LoginServlet extends HttpServlet {
 		String adminName = request.getParameter("admin_name");
 		String adminPass = request.getParameter("admin_password");
 		
-		AdminUserSelectModel.select(adminName, adminPass, request);
+		SelectAdminUserModel.select(adminName, adminPass, request);
 		
 		HttpSession session = request.getSession();
-		AdminBeans adminInfo = (AdminBeans) session.getAttribute("adminBeans"); // getAttributeするときは Object が戻り値
+		AdminUserBeans adminInfo = (AdminUserBeans) session.getAttribute("adminBeans"); // getAttributeするときは Object が戻り値
 		
 		if (adminInfo != null) {
+			ArrayList<ItemBeans> itemBeans = SelectAllItemModel.selectAll();
+			request.setAttribute("itemBeans", itemBeans);
 			String view = "/WEB-INF/views/adminIndex.jsp";
 			request.getRequestDispatcher(view).forward(request, response);
 		} else {

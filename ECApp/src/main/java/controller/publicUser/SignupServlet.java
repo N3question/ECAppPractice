@@ -23,6 +23,11 @@ public class SignupServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String userName = request.getParameter("user_name");
+		String password = request.getParameter("password");
+		
+		
+		
 		String view = "/WEB-INF/views/userLogin.jsp";
         request.getRequestDispatcher(view).forward(request, response);
 	}

@@ -25,6 +25,6 @@ public class GeneralDao {
 		   throws SQLException {
 		PreparedStatement statement = conn.prepareStatement(sql);
 		setParams(statement, params);
-		statement.executeQuery();
+		statement.executeUpdate();
 	}
 }

@@ -3,9 +3,11 @@ package controller.adminUser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.function.Consumer;
+import java.util.ArrayList;
 
-import bean.AdminBeans;
+import bean.AdminUserBeans;
+import bean.CategoryBeans;
+import bean.ItemBeans;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +16,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import model.InsertItemModel;
+import model.SelectAllItemModel;
+import model.SelectCategoryModel;
 
 @WebServlet("/admin_create_item")
 @MultipartConfig
@@ -27,9 +32,12 @@ public class CreateItemServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		AdminBeans adminInfo = (AdminBeans) session.getAttribute("adminBeans");
+		AdminUserBeans adminInfo = (AdminUserBeans) session.getAttribute("adminBeans");
 		
 		if (adminInfo != null) {
+			// TODO categoryを呼び出す処理
+			ArrayList<CategoryBeans> categories = SelectCategoryModel.selectAll();
+			request.setAttribute("categories", categories);
 			String view = "/WEB-INF/views/adminCreateItem.jsp";
 	        request.getRequestDispatcher(view).forward(request, response);
 		} else {
@@ -38,35 +46,30 @@ public class CreateItemServlet extends HttpServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// FIXME Controller内で一度Beansのコンストラクタを呼び出してsetterを通してから引数を渡す必要
 		request.setCharacterEncoding("utf-8");
-		//name属性がpictのファイルをPartオブジェクトとして取得
-		Part part = request.getPart("image");
-		//ファイル名を取得
-		//String filename=part.getSubmittedFileName();//ie対応が不要な場合
-		String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-		//アップロードするフォルダ
-		String path = "/Users/narumi/git/ECAppPractice/ECApp/src/main/webapp/image";
-		//実際にファイルが保存されるパス確認
-		System.out.println("ファイルの名前："+ filename);
-		//書き込み
-		part.write(path+File.separator+filename);
+		String itemName = request.getParameter("item_name");
+		String ss = request.getParameter("sales_status");
+		boolean salesStatus = Boolean.valueOf(ss);
 		
-		request.setAttribute("filename", filename);
+		Part image = request.getPart("image");
+		String filename = Paths.get(image.getSubmittedFileName()).getFileName().toString(); // ファイル名を取得
+		String path = "/Users/narumi/git/ECAppPractice/ECApp/src/main/webapp/image"; // アップロード先
+		image.write(path+File.separator+filename); // 書き込み
+		
+		try{
+			int price = Integer.parseInt(request.getParameter("price"));
+			int categoryId = Integer.parseInt(request.getParameter("category"));
+			InsertItemModel.insert(itemName, price, filename, categoryId, salesStatus);
+			
+			ArrayList<ItemBeans> itemBeans = SelectAllItemModel.selectAll();
+			request.setAttribute("itemBeans", itemBeans);
 
-		String view = "/WEB-INF/views/adminIndex.jsp";
-        request.getRequestDispatcher(view).forward(request, response);
-	}
-	
-	protected void fileUpload(Part part, Consumer<String> function) {
-		if ("".equals(part.getSubmittedFileName())) {
-			return;
-		}
-		String filePath = "/image/" + part.getSubmittedFileName();
-		try {
-			part.write(getServletContext().getRealPath(filePath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		function.accept(filePath);
+			String view = "/WEB-INF/views/adminIndex.jsp";
+	        request.getRequestDispatcher(view).forward(request, response);
+        }
+        catch (NumberFormatException ex){
+            ex.printStackTrace();
+        }
 	}
 }

@@ -2,7 +2,7 @@ package controller.adminUser;
 
 import java.io.IOException;
 
-import bean.AdminBeans;
+import bean.AdminUserBeans;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,7 +21,7 @@ public class CreateUserServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		AdminBeans adminInfo = (AdminBeans) session.getAttribute("adminBeans");
+		AdminUserBeans adminInfo = (AdminUserBeans) session.getAttribute("adminBeans");
 		
 		if (adminInfo != null) {
 			String view = "/WEB-INF/views/adminCreateUser.jsp";

@@ -2,17 +2,17 @@ package bean;
 
 import java.io.Serializable;
 
-public class AdminBeans implements Serializable {
+public class AdminUserBeans implements Serializable {
 	private int adminId;
 	private String adminName;
 	private String adminPassword;
 	
-	public AdminBeans() {}
-	public AdminBeans(String adminName, String adminPassword) {
+	public AdminUserBeans() {}
+	public AdminUserBeans(String adminName, String adminPassword) {
 		this.adminName = adminName;
 		this.adminPassword = adminPassword;
 	}
-	public AdminBeans(int adminId, String adminName) {
+	public AdminUserBeans(int adminId, String adminName) {
 		this.adminId = adminId;
 		this.adminName = adminName;
 	}

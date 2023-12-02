@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import bean.AdminBeans;
+import bean.AdminUserBeans;
 import dao.GeneralDao;
 import db.ConnectionToDB;
 import db.LoadJDBC;
@@ -13,7 +13,7 @@ import hash.Hash;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-public class AdminUserSelectModel {
+public class SelectAdminUserModel {
 	private static final String SELECT_ADMIN_USER_SQL = "SELECT * FROM admin_users WHERE admin_name = ? AND admin_password = ?";
 	public static void select(String adminName, String adminPassword, HttpServletRequest request) {
 		String hashedPassword = Hash.hashingPassword(adminPassword);
@@ -23,7 +23,7 @@ public class AdminUserSelectModel {
 				add(hashedPassword);
 			}
 		};
-		AdminBeans adminBeans = null;
+		AdminUserBeans adminBeans = null;
 		LoadJDBC.LoadingJDBC();
 		try (Connection conn = ConnectionToDB.getConnection()) {
 			ResultSet result = GeneralDao.executeQuery(conn, SELECT_ADMIN_USER_SQL, paramLists);
@@ -31,7 +31,7 @@ public class AdminUserSelectModel {
 			while(result.next()) {
 				int admin_id = result.getInt("admin_id");
             	String admin_name = result.getString("admin_name");
-            	adminBeans = new AdminBeans(admin_id, admin_name);
+            	adminBeans = new AdminUserBeans(admin_id, admin_name);
             }
 			
 			HttpSession session = request.getSession();
