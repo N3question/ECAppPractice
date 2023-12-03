@@ -11,7 +11,7 @@ import db.ConnectionToDB;
 import db.LoadJDBC;
 
 public class SelectAllItemModel {
-	private static final String SELECT_ITEM_SQL = "SELECT items.*, c.category_name FROM items JOIN categories AS c ON items.category_id = c.category_id";
+	private static final String SELECT_ITEM_SQL = "SELECT items.*, c.category_name FROM items JOIN categories AS c ON items.category_id = c.category_id ORDER BY item_id asc";
 	public static ArrayList<ItemBeans> selectAll() {
 		ArrayList<ItemBeans> IList = new ArrayList<>();
 		ArrayList<Object> paramLists = new ArrayList<Object>() {{ }};

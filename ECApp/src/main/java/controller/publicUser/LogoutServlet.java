@@ -7,26 +7,22 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/cart")
-public class CartServlet extends HttpServlet {
+@WebServlet("/user_logout")
+public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-     
-    public CartServlet() {
+       
+    public LogoutServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO sessionに保持しているユーザの情報を取得する記述をかく
-		// setAttributeする
-		String view = "/WEB-INF/views/cart.jsp";
-        request.getRequestDispatcher(view).forward(request, response);
+		HttpSession session = request.getSession();
+        session.removeAttribute("PUBeans");
+        response.sendRedirect("user_login");
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
 
 }
