@@ -33,6 +33,10 @@ public class PublicUserBeans {
 		this.userName = userName;
 	}
 	
+	public PublicUserBeans(int userId) {
+		this.userId = userId;
+	}
+	
 	public int getUserId() {
 		return userId;
 	}

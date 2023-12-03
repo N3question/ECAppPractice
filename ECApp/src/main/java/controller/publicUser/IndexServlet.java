@@ -3,9 +3,10 @@ package controller.publicUser;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import bean.CartBeans;
 import bean.ItemBeans;
+import bean.PublicUserBeans;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.SelectAllItemModel;
-import model.SelectItemModel;
+import model.SelectAllUserIdModel;
 
 @WebServlet("/index")
 public class IndexServlet extends HttpServlet {
@@ -33,38 +34,56 @@ public class IndexServlet extends HttpServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ArrayList<PublicUserBeans> userIdList = SelectAllUserIdModel.selectAll();
+		
+		
 		HttpSession session = request.getSession(true);
-		ArrayList<HashMap<Integer, Integer>> cartList = (ArrayList<HashMap<Integer, Integer>>)session.getAttribute("cartList");
+		ArrayList<CartBeans> cartList = (ArrayList<CartBeans>)session.getAttribute("cartList");
+//		ArrayList<CartBeans> cartList = (ArrayList<CartBeans>)session.getAttribute("cartList");
 		
 		if (cartList == null) {
-			cartList = new ArrayList<HashMap<Integer, Integer>>();
-			HashMap<Integer, Integer> hashMap = putInteger(request);
-			cartList.add(hashMap);
+			cartList = new ArrayList<CartBeans>();
+			CartBeans cartBeans = setInteger(request);
+			cartList.add(cartBeans);
 		} else {
-			HashMap<Integer, Integer> hashMap = putInteger(request);
-			cartList.add(hashMap);
+			CartBeans cartBeans = setInteger(request);
+			cartList.add(cartBeans);
 		}
 		session.setAttribute("cartList", cartList);
-		
-		int itemId = Integer.parseInt(request.getParameter("item_id"));
-		ItemBeans itemBeans = SelectItemModel.select(itemId);
-		request.setAttribute("itemBeans", itemBeans);
 		
 		String view = "/WEB-INF/views/cart.jsp";
         request.getRequestDispatcher(view).forward(request, response);
 	}
 	
-	protected HashMap<Integer, Integer> putInteger(HttpServletRequest request) {
+	protected CartBeans setInteger(HttpServletRequest request) {
 		try {
 			request.setCharacterEncoding("utf-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		int itemId = Integer.parseInt(request.getParameter("item_id"));
+		int userId = Integer.parseInt(request.getParameter("user_id"));
 		int quantity = Integer.parseInt(request.getParameter("quantity"));
 		
-		HashMap<Integer, Integer> hashMap = new HashMap<>();
-		hashMap.put(itemId, quantity);
-		return hashMap;
+		CartBeans cartBeans = new CartBeans(itemId, userId, quantity);
+		return cartBeans;
+	}
+	
+	protected void createSession(ArrayList<PublicUserBeans> userIdList, int sessionUserId, HttpServletRequest request, ArrayList<CartBeans> cartList) {
+		for (int i = 0; i < userIdList.size(); i++) {
+			// 配列から i 番目のユーザ情報を取得
+			PublicUserBeans PUBeans = userIdList.get(i);
+			// 取得した情報からuserのidをget 
+			int userId = PUBeans.getUserId();
+			// 文字列に変換
+			String str = String.valueOf(userId);
+	
+			HttpSession session = request.getSession();
+	        String user_id = str;
+			// 指定したキーのsessionが存在するかを確認
+			if (session.getAttribute(user_id) == null) {
+				session.setAttribute(user_id, cartList);
+			}
+		}
 	}
 }

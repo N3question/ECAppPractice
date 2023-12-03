@@ -11,7 +11,7 @@ import db.ConnectionToDB;
 import db.LoadJDBC;
 
 public class SelectItemModel {
-	private static final String SELECT_ITEM_SQL = "SELECT * FROM items WHERE item_id = ?";
+	private static final String SELECT_ITEM_SQL = "SELECT items.*, c.category_name FROM items JOIN categories AS c ON items.category_id = c.category_id WHERE item_id = ?";
 	public static ItemBeans select(int itemId) {
 		ArrayList<Object> paramLists = new ArrayList<Object>() {
 			{ 

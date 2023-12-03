@@ -18,8 +18,6 @@ public class CartServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO sessionに保持しているユーザの情報を取得する記述をかく
-		// setAttributeする
 		String view = "/WEB-INF/views/cart.jsp";
         request.getRequestDispatcher(view).forward(request, response);
 	}

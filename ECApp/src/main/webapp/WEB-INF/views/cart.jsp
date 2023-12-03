@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.Map, java.util.HashMap, bean.ItemBeans, java.util.ArrayList, java.text.NumberFormat, bean.PublicUserBeans"%>
+<%@ page import="bean.CartBeans, bean.ItemBeans, java.util.ArrayList, java.text.NumberFormat, bean.PublicUserBeans"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,29 +12,32 @@ integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUU
 <body>
 	<main>
 		<div class="container">
-			<h4 class="mt-5">Cart</h4>
+			<h4 class="mt-5">Your Cart</h4>
 			<div class="d-flex">
 			<% 
-			ArrayList<HashMap<Integer, Integer>> cartList = (ArrayList<HashMap<Integer, Integer>>) session.getAttribute("cartList");
+			ArrayList<CartBeans> cartList = (ArrayList<CartBeans>) session.getAttribute("cartList");
+			PublicUserBeans sessionUserInfo = (PublicUserBeans) session.getAttribute("PUBeans");
+			int loginUserId = sessionUserInfo.getUserId();
 			%>
 			<% if (cartList != null) { %>
-				<% for (HashMap<Integer, Integer> arrayList : cartList) { %>
+				<% for (CartBeans beans : cartList) { %>
+					<% if (loginUserId == beans.getUserId()) { %>
 						<div class="card" style="width: 120px;">
 							<img src="..." class="card-img-top" alt="...">
 							<div class="card-body">
-								<h5 class="card-title">Card title</h5>
-								<% for (HashMap.Entry<Integer, Integer> cart : arrayList.entrySet()) { %>
-									<p>item id : <%= cart.getKey() %></p>
-									<p>value : <%= cart.getValue() %></p>
-								<% } %>
+								<h5 class="card-title">Card Title</h5>
+								<p>item id : <%= beans.getItemId() %></p>
+								<p>user id : <%= beans.getUserId() %></p>
+								<p>quantity : <%= beans.getQuantity() %></p>
 							</div>
 							<form action="map_remove" method="post">
-								<% for (int i = 0; i < arrayList.size(); i++) { %>
+								<% for (int i = 0; i < cartList.size(); i++) { %>
 									<input type="hidden" name="index_num" value="<%= i %>">
 								<% } %>
 								<button type="submit" class="btn-close btn-sm border" aria-label="Close"></button>
 							</form>
 						</div>
+					<% } %>
 				<% } %>
 			<% } %>
 			</div>
